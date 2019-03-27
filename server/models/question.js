@@ -1,3 +1,4 @@
+const mongoose =  require('mongoose')
 const timestamp = require('mongoose-timestamp')
 const Schema = mongoose.Schema
 
@@ -10,9 +11,9 @@ const questionSchema = new Schema({
         type:String,
         required:[true,'title/desciption not defined']
     },
-    question:{
+    description:{
         type:String,
-        required:[true,'question cant have empty value']
+        required:[true,'description cant have empty value']
     },
     status:{
         type:Boolean,
@@ -21,6 +22,11 @@ const questionSchema = new Schema({
     active:{
         type:Boolean,
         default:true
+    },
+    vote:Array,
+    totalvote:{
+        type:Number,
+        default:0
     }
 })
     

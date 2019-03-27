@@ -1,30 +1,23 @@
-const {Answer,Question,User,Vote} = require('../models'), check = require('../helpers/token')
+const { Question, User} = require('../models'), check = require('../helpers/token')
 
 class QuestionController{
     static create(req,res){
+        console.log(res.locals.user, 'ini yang dicari')
+        // console.log(req.body)
         let newData = {}
-        check.verify(req.headers.token)
-        .then(data=>{
-            newData.user_id = data
-            return User.findbyId(data)
-        })
-        .then(data=>{
-            if(data){
-                if(req.body){
-                    if (req.body.title) {
-                       newData.title = req.body.title 
-                    } 
-                    if(req.body.question){
-                        newData.question = req.body.question
-                    } 
-                    return newData.save()
-                } else {
-                    throw Error('Title/description not define')
-                }
-            } else {
-                throw Error('User not found')
+            newData.user_id = res.locals.user._id
+            console.log(data.id)
+        if(req.body){
+            if (req.body.title) {
+            newData.title = req.body.title 
+            } 
+            if(req.body.description){
+                newData.description = req.body.description
             }
-        })
+        } else {
+            throw Error('Title/description not define')
+        }
+        Question.create(newData)
         .then(data=>{
             res.status(201).json(data)
         })
@@ -42,11 +35,8 @@ class QuestionController{
     }
 
     static read(req,res){
-        let where = {}
-        if(req.params.id){
-            where.id = req.params.id
-        }
-        Question.findbyId(where)
+        
+        Question.findById(req.params.id)
         .then(data=>{
             if (data) {
                 res.status(200).json(data)
@@ -56,7 +46,6 @@ class QuestionController{
         })
         .catch(err=>{
             console.error();
-            
             if (err.message) {
                 res.status(404).json(err.message)
             } else {
@@ -68,23 +57,19 @@ class QuestionController{
     }
 
     static update(req,res){
-        check.verify(req.headers.token)
-        let id = null
+        // console.log(req.params,'ini id dari req params update ')
+        // console.log(res.locals.user,'ini user profile')
+        let user = res.locals.user
+        Question.findById(req.params.id)
         .then(data=>{
-            return User.findbyId(data)
-        })
-        .then(data=>{
-            id = data
-            return Question.findbyId(req.body.id)
-        })
-        .then(data=>{
+            console.log(data,'ini data question')
           if(data){
-              if (data.user_id === id) {
+              if (String(data.user_id) === String(user._id)) {
                   if (req.body.title) {
                       data.title = req.body.title
                   }
-                  if(req.body.question){
-                      data.question = req.body.question
+                  if(req.body.description){
+                      data.description = req.body.description
                   }
                   if (req.body.status) {
                       data.status = true
@@ -96,6 +81,9 @@ class QuestionController{
           } else {
               throw Error('not found')
           }
+        })
+        .then(data=>{
+            res.status(200).json(data)
         })
         .catch(err=>{
             if(err.message){
@@ -115,26 +103,20 @@ class QuestionController{
     }
 
     static archive(req,res){
-        check.verify(req.headers.token)
-        let id = null
+        let user = res.locals.user
+        Question.findById(req.params.id)
         .then(data=>{
-            return User.findbyId(data)
+            console.log(user, data,String(data.user_id )=== String(user._id))
+            if (String(data.user_id )=== String(user._id)) {
+                    data.active = false
+                    console.log(data)
+                    return data.save()
+            } else {
+                throw Error('not authorized')
+            }
         })
         .then(data=>{
-            id = data
-            return Question.findbyId(req.body.id)
-        })
-        .then(data=>{
-          if(data){
-              if (data.user_id === id) {
-                      data.active = false
-                      return data.save()
-              } else {
-                  throw Error('not authorized')
-              }
-          } else {
-              throw Error('not found')
-          }
+            res.status(200).json(data)
         })
         .catch(err=>{
             if(err.message){
@@ -151,6 +133,45 @@ class QuestionController{
                 })
             }
         })   
+    }
+
+    static vote(req,res){
+        const status = Boolean(req.body.status)
+        let voter = res.locals.user
+        let newVote = {}
+            newVote.id = voter._id
+            newVote.status = status
+        Question.findById(req.params.id)
+        .then(data=>{
+            data.vote.forEach((element, index) => {
+                if (element.id === newVote.id && element.status === newVote.status) {
+                    data.vote.slice(index,1)
+                } 
+                if (element.id === newVote.id && element.status !== newVote.status) {
+                    data.vote[index].status = newVote.status
+                } 
+                if (element.id !== newVote.id && element.status !== newVote.status && index >data.vote.length) {
+                    data.vote.push(newVote)
+                }
+                if (data.vote.status === status ) {
+                    data.totalvote ++
+                } else {
+                    data.totalvote --
+                }
+            })
+            return data.save()
+        })
+        .then(data=>{
+            console.log(data)
+            res.status(200).json(data)
+        })
+        .catch(err=>{
+            console.error()
+            res.status(500).json({
+                message: 'internal server error',
+                error: err.Error
+            })
+        })
     }
 }
 

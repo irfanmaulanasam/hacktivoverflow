@@ -16,8 +16,8 @@ class Token{
     }
 
     static verify(token){
-        return new Promise(function (resolve,reject) {
-            jwt.verify(token,secret,function(err,verified) {
+        return new Promise((resolve,reject)=>{
+            jwt.verify(token,secret,(err,verified)=> {
                 if(!err){
                     resolve(verified)
                 } else {

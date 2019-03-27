@@ -48,6 +48,25 @@ class UserController{
         })
     }
 
+    static read(req,res){
+        let where= {}
+        if(req.params){
+            where = {
+                id : req.params.id
+            }
+        }
+        User.find(where)
+        .then(data=>{
+            console.log(data)
+            res.status(200).json(data)
+        })
+        .catch(err=>{
+            res.status(500).json({
+                message:'internal server error',
+                error: err.Error
+            })
+        })
+    }
     static signin(req,res){
         let id = null
         let dataSuccess = {}
@@ -57,11 +76,10 @@ class UserController{
         ]})
         .then(data=>{
             if (!data) {
-                throw Error ({
+                throw new Error ({
                     message:'username/password is invalid'
                 })
             } else {
-                dataSuccess.isAdmin = data.Admin
                 id = data.id
                 return password.compare(req.body.password,data.password)
             }
@@ -70,12 +88,13 @@ class UserController{
             if (check) {
                 return token.create(id)
             } else {
-                throw ({
+                throw new Error ({
                     message: 'username/password is invalid'
                 })
             }
         })
         .then(data=>{
+            dataSuccess.id = id
             dataSuccess.token = data
             res.status(200).json(dataSuccess)
         })
@@ -85,11 +104,15 @@ class UserController{
     }
 
     static update(req,res){
+        // console.log(res.locals.user,'ini res local')
+        // console.log('========')
+        // console.log(req.body, 'ini req.body')
+        // console.log(req.params,'ini req params')
+        // console.log(req.headers, 'ini req headers')
+        // console.log('===========')
         const {username,password,job} = req.body
-        token.verify(req.headers.token)
-        .then(id=>{
-            return User.findById(id)
-        })
+        const id = res.locals.user._id
+        User.findById(id)
         .then(user=>{
             if (user) {
                 if (name) {
@@ -106,7 +129,7 @@ class UserController{
                 }
                 return user.save()
             } else {
-                throw Error({
+                throw new Error({
                     message:'user not found'
                 })
             }
@@ -135,19 +158,21 @@ class UserController{
             res.status(500).json(err.Error)
         })
     }
-    static delete(req,res){
-        token.verify(req.header.token)
-        then(id=>{
-            return User.findById(id)
-        })
+
+    static removeuser(req,res){
+        // console.log(res.locals.user,'data pertama')
+        User.findById(res.locals.user._id)
         .then(data=>{
+            console.log( 'data kedua',data)
             data.status = false
             return data.save()
         })
         .then(data=>{
+            console.log( 'ini yang ketiga' , data)
             res.status(200).json(data)
         })
         .catch(err=>{
+            console.error()
             res.status(500).json(err.Error)
         })
     }

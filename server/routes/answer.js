@@ -6,10 +6,11 @@
 // | ```/answer/upvote/:id``` | **PUT** | **TOKEN** | answer_id | update vote for answer  question in website | ```vote:number``` |
 // | ```/answer/downvote/:id``` | **PUT** | **TOKEN** | answer_id | update vote for answer  question in website | ```vote:number``` |
 
-const express = require('express'), router = express.Router(), {AnswerController, VoteController} = require('../controllers'),tokencheck = require('../middleware/')
+const express = require('express'), router = express.Router(), AnswerController = require('../controllers/answer'),{tokencheck }= require('../middleware/')
 
 router.get('/:question_id', AnswerController.read)
 router.post('/add', tokencheck, AnswerController.create)
 router.put('update/:id', tokencheck, AnswerController.update)
-router.put('/upvote/:id', tokencheck, VoteController.create)
-router.put('/downvote/:id', tokencheck, VoteController.create)
+router.put('/vote/:id', tokencheck, AnswerController.vote)
+
+module.exports = router

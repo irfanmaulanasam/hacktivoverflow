@@ -1,3 +1,4 @@
+const mongoose =  require('mongoose')
 const timestamp = require('mongoose-timestamp')
 const hashingpassword = require('../helpers/password')
 const Schema = mongoose.Schema
@@ -30,7 +31,7 @@ const userSchema = new Schema({
         type: String,
         required: [true, 'Password required']
     },
-    job:Boolean,
+    job:String,
     status:{
         type:Boolean,
         default:true

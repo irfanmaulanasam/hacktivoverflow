@@ -2,11 +2,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const users = require('./routes/users')
+const answer = require('./routes/answer')
+const question = require('./routes/question')
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var questionRouter = require('./routes/question');
-var answerRouter = require('./routes/answer');
 
 var app = express();
 
@@ -22,10 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/users', usersRouter);
-app.use('/question', questionRouter);
-app.use('/answer', answerRouter);
+console.log('port server running')
+app.use('/answer', answer);
+app.use('/question', question);
 app.use('/search', indexRouter);
+app.use('/users', users);
 
 module.exports = app;

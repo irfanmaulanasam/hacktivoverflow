@@ -9,17 +9,15 @@
  | ```/question/update/:id``` | **PUT** | **TOKEN** | title:string, description:string | update user question in website | ```title:string, description:string``` |
  | ```/question/archive``` | **PUT** | **TOKEN** | question_id:string | archiving user question in website | ```message:string``` |
  | ```/question/delete``` | **DELETE** | **TOKEN** | question_id:string | delete user question in website | ```message:string``` |
- | ```/question/upvote/:id``` | **PUT** | **TOKEN** | answer_id | update vote for question in website | ```vote:number``` |
- | ```/question/downvote/:id``` | **PUT** | **TOKEN** | answer_id | update vote  for question in website | ```vote:number``` |
-
+ | ```/question/vote/:questionid``` | **PATCH** | **TOKEN** | status:Boolean | update vote for question in website | ```upvote:number, downvote:number``` |
+ 
 ## Answer
 | routes | method | headers | body | description | output |
 | ----- |--|:----:|--------|-----| :---------- |
 | ```/answer``` | **GET** | **NONE** | **NONE** | get all answer question in website | ```[{username:string, answer:string}, {username:string, answer:string}, {username:string, answer:string}]``` |
-| ```/answer/add``` | **POST** | **TOKEN** | answer:string | add answer for question in website | ```{ answer_id:string, question_id:string, user_id:string, answer:string}``` |
-| ```/answer/update``` | **PUT** | **TOKEN** | answer:string | update by own user_id answer for question in website | ```{answer_id:string, user_id:string, answer:string}``` |
-| ```/answer/upvote``` | **PUT** | **TOKEN** | answer_id | update vote for answer  question in website | ```vote:number``` |
-| ```/answer/downvote``` | **PUT** | **TOKEN** | answer_id | update vote for answer  question in website | ```vote:number``` |
+| ```/answer/add``` | **POST** | **TOKEN** | title:string, description:string | add answer for question in website | ```{ answer_id:string, question_id:string, user_id:string, answer:string}``` |
+| ```/answer/update``` | **PUT** | **TOKEN** | answer_id:string, title:string, description:string | update by own user_id answer for question in website | ```{answer_id:string, user_id:string, answer:string}``` |
+| ```/answer/vote``` | **PUT** | **TOKEN** | answer_id:string, question_id:string, status:Boolean | update vote for answer  question in website | ```upvote:number, downvote:number``` |
 
 ## Search
 | routes | method | headers | body | description | output |
