@@ -6,19 +6,21 @@
       <v-footer>
       <footbar/>
       </v-footer>
+  <!-- <textareas/> -->
   </v-app>
 </template>
-
 <script>
-const baseURL = `https://localhost:3000`
+const baseURL = `http://localhost:3000`
 import toolbar from './components/core/Toolbar'
 import footbar from './components/core/footbar'
+// import textareas from './components/core/texteditor'
 
 export default {
   name: 'App',
   components: {
     toolbar,
     footbar
+    // textareas
   },
   data () {
     return {

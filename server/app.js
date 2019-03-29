@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const cors = require('cors')
 const users = require('./routes/users')
 const answer = require('./routes/answer')
 const question = require('./routes/question')
@@ -13,6 +14,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const databaseName = process.env.databaseName
 
+app.use(cors())
 mongoose.connect(`mongodb://localhost/${databaseName}`,{useNewUrlParser:true})
 mongoose.set('useCreateIndex', true)
 

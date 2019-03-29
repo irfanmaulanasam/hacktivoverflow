@@ -54,11 +54,11 @@
             </v-layout>
     <!-- end dialog sign in -->
     <!-- start dialog sign up -->
-              <v-layout row justify-center>
-            <v-dialog v-model="signupdialog" persistent max-width="450px">
+          <v-layout row justify-center>
+            <v-dialog v-model="signupdialog" persistent max-width="550px">
                 <template v-slot:activator="{ on }">
                     <span class="mr-2" dark v-on="on">
-                        <v-btn flat>
+                        <v-btn flat >
                             Sign up
                         </v-btn>
                     </span>
@@ -120,7 +120,6 @@ export default {
     }),
   methods: {
     getsignin() {
-      console.log(`${this.url}/users/signin`)
       let obj = {
         email: this.email,
         password: this.password
@@ -144,6 +143,7 @@ export default {
         })
     },
     getsignup(){
+      console.log('masuk sini')
       let obj = {
         name: this.name,
         username:this.username,
@@ -151,7 +151,6 @@ export default {
         password:this.password,
         job:this.job
       }
-      console.log(obj, `${this.url}/users/signup` `<<<<<<<<<<<<<<`);
       axios
       .post(`${this.url}/users/signup`, obj)
         .then((response)=>{

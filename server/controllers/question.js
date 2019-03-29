@@ -57,12 +57,9 @@ class QuestionController{
     }
 
     static update(req,res){
-        // console.log(req.params,'ini id dari req params update ')
-        // console.log(res.locals.user,'ini user profile')
         let user = res.locals.user
         Question.findById(req.params.id)
         .then(data=>{
-            console.log(data,'ini data question')
           if(data){
               if (String(data.user_id) === String(user._id)) {
                   if (req.body.title) {
